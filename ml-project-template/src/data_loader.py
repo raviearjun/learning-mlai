@@ -31,5 +31,5 @@ def load_dataset(dataset_dir):
             _, gray = load_image(os.path.join(root, f))
             if gray is not None:
                 images.append(gray)
-                labels.append(root.split('/')[-1])
+                labels.append(os.path.basename(root))
     return images, labels

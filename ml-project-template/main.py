@@ -24,11 +24,13 @@ for image, label in zip(images, labels):
         y.append(label)
 X, y = np.array(X), np.array(y)
 
-print(f'Loaded {len(images)} images with labels: {np.unique(labels)}')
+print(f'Loaded {len(images)} images with labels:')
+for label in set(y):
+    print(f' - {label}')
 
 # Train/Test split
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # Train model
 pipe = build_pipeline()
