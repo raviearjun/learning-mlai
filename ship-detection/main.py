@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from src.selective_search import propose_regions
+from src.proposals.selective_search import propose_regions
 import cv2
 import numpy as np
 
@@ -8,7 +8,7 @@ def main():
     # Path ke folder images
     img_dir = Path(__file__).parent / "images"
     # Output folder (opsional) untuk simpan hasil visualisasi
-    out_dir = Path(__file__).parent / "out"
+    out_dir = Path(__file__).parent / "out" / "regions"
     out_dir.mkdir(exist_ok=True)
 
     # Loop semua file gambar
