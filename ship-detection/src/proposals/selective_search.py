@@ -30,9 +30,9 @@ def propose_regions(image_path, min_area=500, display=False):
     # --- Jika tidak ada region (kontras rendah) coba dengan CLAHE ---
     if len(proposals) == 0:
         blurred = cv2.GaussianBlur(gray, (11, 11), 0)
-        gray_clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(16,16)).apply(blurred)
+        gray_clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4,4)).apply(blurred)
 
-        edges = cv2.Canny(gray_clahe, 40, 100)
+        edges = cv2.Canny(gray_clahe, 30, 90)
         dilated = cv2.dilate(edges, kernel, iterations=2)
         contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         for cnt in contours:
