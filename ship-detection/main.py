@@ -6,7 +6,7 @@ import numpy as np
 
 def main():
     # Path ke folder images
-    img_dir = Path(__file__).parent / "images"
+    img_dir = Path(__file__).parent / "images" / "samples"
     # Output folder (opsional) untuk simpan hasil visualisasi
     out_dir = Path(__file__).parent / "out" / "regions"
     out_dir.mkdir(exist_ok=True)
