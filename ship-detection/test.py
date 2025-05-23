@@ -20,18 +20,32 @@ detect_folder(TEST_DIR, RESULT_DIR, PRED_CSV, KM_PATH, SVM_PATH,
               region_params={"min_area":500,"display":False})
 
 # 3) Decode GT RLE → gt_boxes dict
-def rle_to_boxes(df):
+def rle_to_boxes(df, height=768, width=768):
+    """
+    Untuk setiap baris RLE di GT CSV, decode jadi mask terpisah dan
+    buat satu bounding-box. Jika satu gambar ada multiple RLE,
+    akan jadi multiple boxes.
+    """
     boxes = {}
-    for img, g in df.groupby("ImageId"):
-        mask = np.zeros(768*768, bool)
-        for r in g.EncodedPixels.dropna():
-            arr = np.array(r.split(), int).reshape(-1,2)
-            for start,length in arr:
-                mask[start-1:start-1+length] = True
-        m = mask.reshape((768,768), order='F')
-        ys, xs = np.where(m)
-        if len(xs):
-            boxes[img] = [(xs.min(), ys.min(), xs.max(), ys.max())]
+    for img, group in df.groupby("ImageId"):
+        img_boxes = []
+        for rle in group.EncodedPixels.dropna():
+            # decode single RLE ke mask
+            mask = np.zeros(height * width, dtype=bool)
+            arr = np.array(rle.split(), dtype=int).reshape(-1, 2)
+            for start, length in arr:
+                mask[start - 1 : start - 1 + length] = True
+            mask = mask.reshape((height, width), order='F')
+
+            ys, xs = np.where(mask)
+            if len(xs) > 0:
+                x0, y0 = xs.min(), ys.min()
+                x1, y1 = xs.max(), ys.max()
+                img_boxes.append((x0, y0, x1, y1))
+
+        if img_boxes:
+            boxes[img] = img_boxes
+
     return boxes
 
 gt_df = pd.read_csv(GT_CSV)
